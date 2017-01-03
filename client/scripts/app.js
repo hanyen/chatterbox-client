@@ -7,33 +7,48 @@ class can read and write from (via REST).
 
 The message objects you send to the parse server (via POST requests) should be in the following format:
 */
+var $messageContent;
 
 var app = {
 
   server: 'https://api.parse.com/1/classes/messages',
+
+  //for testing only
   messageObject: {
     username: 'hanyen',
     text: 'testing message',
     roomname: 'lobby'
   },
+  
   init: function() {
-    // create a user chat after clicking on the username
-      //fetch all the chats of that user, using .fetch method, passing the username
-    // this.fetch();
+    //fetch all messages and display it in #chat
+    app.fetch();
     
-    // create click event handlers 
-    $('.username').on('click', this.handleUsernameClick);
-    $('#send .submit').on('submit', this.handleSubmit);
+    // create a user chat window after clicking on the username
+      //fetch all the chats of that user, using .fetch method, passing the username
+      //===== code below ======
+
+    
+    // create click event handlers for username click (onClick)
+    $('.username').on('click', app.handleUsernameClick);
+
+    // create click event handlers for submit button (onSubmit)
+    $('#send .submit').on('submit', app.handleSubmit);
+
+    
   },
-  send: function(message) {
+  
+  send: function(messageObject) {
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
       url: app.server,
       type: 'POST',
-      data: JSON.stringify(message),
+      data: JSON.stringify(messageObject),
       contentType: 'application/json',
       success: function (data) {
+        console.log(data);
         console.log('chatterbox: Message sent');
+        
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -41,18 +56,22 @@ var app = {
       }
     });
   },
-  fetch: function(userName) {
+  
+  fetch: function() {
+    
+    //cache the DOM so that we only have to look at it once
+    var $chats = $('#chats');
+
     $.ajax({
-      // This is the url you should use to communicate with the parse API server.
       url: app.server,
       type: 'GET',
-      // data: JSON.stringify(message),
       contentType: 'application/json',
-      success: function (data) {
-        //if argument is undefined, grab all objects
-          //else if argument = a username, grab all objects associated with that userName
-        
-        // $('#chatsTextArea').html($chatsContent.results[0].text);
+      success: function (messages) {
+        // console.log(messages);
+        // iterate through the data
+        $.each(messages.results, function(i, message) {
+          app.renderMessage(message);
+        });
         console.log('chatterbox: Message received');
       },
       error: function (data) {
@@ -65,7 +84,7 @@ var app = {
     $('#chats').empty();
   },
   renderMessage: function(message) {
-    $('#chats').html('<p><button class = "username">' + message.username + '</button> ' + message.text + '</p>');
+    $('#chats').append('<div class="message"><button class = "username">' + message.username + '</button> ' + message.text + '</div>');
     
   },
   renderRoom: function(roomName) {
@@ -77,22 +96,22 @@ var app = {
   },
   handleSubmit: function() {
     console.log('i am in handleSubmit');
-    // post and get
-    // app.messageObject['usernamame'] = 'hanyen';
-    // app.messageObject['text'] = $('.submit').val();
-    // app.messageObject['roomname'] = 'lobby';
+    // create a messageObject
+    var messageObject = {
+      // get the current username (default: hanyen)
+      username: 'hanyen',
+      // get the message typed in the box (#message)
+      text: $('#message').val(),
+      // get the current room i am in (#roomSelect)
+      roomname: 'lobby'
+    }
+    console.log(messageObject);
 
-    app.send(app.messageObject);
-    app.fetch(app.messageObject);
+    // pass the messageObject to app.send
+    app.send(messageObject);
   }
 };
 
-
-var message = {
-  username: 'hanyen',
-  text: 'whazapp!!!',
-  roomname: 'lobby'
-};
 
 
 

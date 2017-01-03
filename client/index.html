@@ -29,12 +29,13 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
-      <div class="spinner"><img src="client/images/spiffygif_46x46.gif"></div>
+      <div class="spinner"><img src="images/spiffygif_46x46.gif"></div>
       <div id="rooms">
-      Room:
-      <select id="roomSelect">
-      </select>
+        Room:
+        <select id="roomSelect">
+        </select>
       </div>
+      
       <form action="#" id="send" method="post">
         <input type="text" name="message" id="message"/>
         <input type="submit" name="submit" class="submit"/>
@@ -42,6 +43,12 @@
     
       <div id="chats"></div>
     </div>
+    <script>
+      $(document).ready(function() {
+        // alert(app.init);
+        app.init();
+      });
+    </script>
   
   </body>
 

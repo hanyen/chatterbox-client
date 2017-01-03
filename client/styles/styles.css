@@ -46,6 +46,11 @@ body {
     line-height: 13px;
 }
 
+#chats {
+    width: 500px;
+    fill: red;
+}
+
 form {
     padding: 20px;
     padding-left: 0;
@@ -88,3 +93,8 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.message {
+    background-color: #dcdcdc;
+    padding: 5px;
+    margin: 10px;
+}
