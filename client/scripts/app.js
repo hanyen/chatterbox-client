@@ -51,6 +51,16 @@ var app = {
         console.error('chatterbox: Failed to receive message', data);
       }
     });
+  },
+  clearMessages: function() {
+    $('#chats').empty();
+  },
+  renderMessage: function(message) {
+    $('#chats').html('<p>' + message.text + '</p>');
+    console.log(message.text);
+  },
+  renderRoom: function(roomName) {
+    $('#roomSelect').html('<option>' + roomName + '</option>');
   }
 };
   
@@ -59,6 +69,7 @@ var message = {
   text: 'whazapp!!!',
   roomname: 'lobby'
 };
+
 /*
 To get you started, here's an example POST request. Note that any messages you POST to the server are viewable by everyone, so be nice.
 */
@@ -107,7 +118,7 @@ Use proper escaping on any user input. Since you're displaying input that other 
 http://wonko.com/post/html-escaping
 */
 
-var something = "";
+
 
 /*
 
@@ -118,14 +129,15 @@ var something = "";
 //1. assign IDs/clasees to the html form elements
 //2. create jquery to handle button click
 */
-$sendButton.click(function() {
-  console.log("button clicked");
-  var userMessage = $textField.val();
-  //empty the textField
-  $textField.val("");
-  //display message on the chatbox
-  $chats.html(userMessage);
-});
+
+// $sendButton.click(function() {
+//   console.log("button clicked");
+//   var userMessage = $textField.val();
+//   //empty the textField
+//   $textField.val("");
+//   //display message on the chatbox
+//   $chats.html(userMessage);
+// });
 /*
 
 
