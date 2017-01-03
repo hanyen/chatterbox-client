@@ -22,7 +22,10 @@ var app = {
   
   init: function() {
     //fetch all messages and display it in #chat
+    //setInterval to autofetch
     app.fetch();
+    // setInterval(app.fetch, 3000);
+    
     
     // create a user chat window after clicking on the username
       //fetch all the chats of that user, using .fetch method, passing the username
@@ -33,7 +36,7 @@ var app = {
     $('.username').on('click', app.handleUsernameClick);
 
     // create click event handlers for submit button (onSubmit)
-    // $('#send .submit').on('submit', app.handleSubmit);
+     $('#send .submit').on('submit', app.handleSubmit);
 
     
   },
@@ -71,9 +74,25 @@ var app = {
         // console.log(messages);
         // goal: render the recent messages firstd
         // iterate through the data
+        
+        // find out all the roomnames
+          //populate the dropdown options with roomnames
+        // for the given roomnames in the dropdown
+          // render message based on the roomname
         for (var i = 0; i < messages.results.length; i++) {
           app.renderMessage(messages.results[i]);
+          //app.renderRoom(messages.results[i]);
+
+        }
+        //create object with roomname as the key
+        var roomnameObject = {};
+        for (var i = 0; i < messages.results.length; i++) {
+          roomnameObject[messages.results[i].roomname] = '';
+          console.log(roomnameObject);
           // app.renderRoom(messages.results[i]);
+        }
+        for (var key in roomnameObject) {
+          app.renderRoom(key);
         }
         console.log('chatterbox: Message received');
       },
@@ -93,16 +112,17 @@ var app = {
     //set the dropdown #to the room name
 
   },
-  renderRoom: function(message) {
-    $('#roomSelect').html('<option>' + message.roomname + '</option>');
+  renderRoom: function(roomName) {
+    //adding roomname to the option
+    $('#roomSelect').append('<option>' + roomName + '</option>');
   },
   handleUsernameClick: function() {
     console.log('i am in handleUsernameClick');
     
   },
   handleSubmit: function() {
-    console.log('i am in handleSubmit');
-    console.log($('.sendMessage').val());
+    // console.log('i am in handleSubmit');
+    // console.log($('.sendMessage').val());
     // create a messageObject
     var messageObject = {
       // get the current username (default: hanyen)
