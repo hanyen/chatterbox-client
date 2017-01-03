@@ -48,7 +48,7 @@ var app = {
       success: function (data) {
         console.log(data);
         console.log('chatterbox: Message sent');
-        
+        app.fetch();
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -66,12 +66,19 @@ var app = {
       url: app.server,
       type: 'GET',
       contentType: 'application/json',
+      data: {order: '-createdAt'},
       success: function (messages) {
         // console.log(messages);
+        // goal: render the recent messages firstd
         // iterate through the data
-        $.each(messages.results, function(i, message) {
-          app.renderMessage(message);
-        });
+        for (var i = 0; i < messages.results.length; i++) {
+          app.renderMessage(messages.results[i]);
+          // app.renderRoom(messages.results[i]);
+        }
+        // $.each(messages.results, function(i, message) {
+        //   app.renderMessage(message);
+        //   app.renderRoom(message);
+        // });
         console.log('chatterbox: Message received');
       },
       error: function (data) {
@@ -84,11 +91,14 @@ var app = {
     $('#chats').empty();
   },
   renderMessage: function(message) {
-    $('#chats').append('<div class="message"><button class = "username">' + message.username + '</button> ' + message.text + '</div>');
     
+
+    $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + message.text + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
+    //set the dropdown #to the room name
+
   },
-  renderRoom: function(roomName) {
-    $('#roomSelect').html('<option>' + roomName + '</option>');
+  renderRoom: function(message) {
+    $('#roomSelect').html('<option>' + message.roomname + '</option>');
   },
   handleUsernameClick: function() {
     console.log('i am in handleUsernameClick');
@@ -96,15 +106,16 @@ var app = {
   },
   handleSubmit: function() {
     console.log('i am in handleSubmit');
+    console.log($('#send .sendMessage').val());
     // create a messageObject
     var messageObject = {
       // get the current username (default: hanyen)
       username: 'hanyen',
       // get the message typed in the box (#message)
-      text: $('#message').val(),
+      text: $('#send .sendMessage').val(),
       // get the current room i am in (#roomSelect)
       roomname: 'lobby'
-    }
+    };
     console.log(messageObject);
 
     // pass the messageObject to app.send
@@ -116,7 +127,8 @@ var app = {
 
 
 /*
-1. Display messages retrieved from the parse server.
+1. Display messages retrieved from the parse server. (done)
+
 Use proper escaping on any user input. Since you're displaying input that other users have typed, your app is vulnerable XSS attacks. See the section about escaping below.
 http://wonko.com/post/html-escaping
 
