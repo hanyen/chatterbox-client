@@ -33,7 +33,7 @@ var app = {
     $('.username').on('click', app.handleUsernameClick);
 
     // create click event handlers for submit button (onSubmit)
-    $('#send .submit').on('submit', app.handleSubmit);
+    // $('#send .submit').on('submit', app.handleSubmit);
 
     
   },
@@ -75,10 +75,6 @@ var app = {
           app.renderMessage(messages.results[i]);
           // app.renderRoom(messages.results[i]);
         }
-        // $.each(messages.results, function(i, message) {
-        //   app.renderMessage(message);
-        //   app.renderRoom(message);
-        // });
         console.log('chatterbox: Message received');
       },
       error: function (data) {
@@ -106,13 +102,13 @@ var app = {
   },
   handleSubmit: function() {
     console.log('i am in handleSubmit');
-    console.log($('#send .sendMessage').val());
+    console.log($('.sendMessage').val());
     // create a messageObject
     var messageObject = {
       // get the current username (default: hanyen)
       username: 'hanyen',
       // get the message typed in the box (#message)
-      text: $('#send .sendMessage').val(),
+      text: $('.sendMessage').val(),
       // get the current room i am in (#roomSelect)
       roomname: 'lobby'
     };
