@@ -86,6 +86,8 @@ var app = {
         for (var i = 0; i < messages.results.length; i++) {
           if ($('#roomSelect option:selected').text() === 'AllRooms') { /* use jquery to find out which option is selected. if it's AllRooms */
             app.renderMessage(messages.results[i]);
+          } else if ($('#roomSelect option:selected').text() === messages.results[i].roomname) {
+            app.renderMessage(messages.results[i]);
           }
         }
         
@@ -151,7 +153,7 @@ var app = {
       // get the message typed in the box (#message)
       text: $('.sendMessage').val(),
       // get the current room i am in (#roomSelect)
-      roomname: 'lobby'
+      roomname: $('#roomSelect option:selected').text()
     };
 
     // pass the messageObject to app.send
