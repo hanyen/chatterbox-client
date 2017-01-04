@@ -24,7 +24,7 @@ var app = {
     //fetch all messages and display it in #chat
     //setInterval to autofetch
     app.fetch();
-    // setInterval(app.fetch, 3000);
+    setInterval(app.fetch, 10000);
     
     
     // create a user chat window after clicking on the username
@@ -36,7 +36,7 @@ var app = {
     $('.username').on('click', app.handleUsernameClick);
 
     // create click event handlers for submit button (onSubmit)
-     $('#send .submit').on('submit', app.handleSubmit);
+    $('#send .submit').on('submit', app.handleSubmit);
 
     
   },
@@ -49,8 +49,9 @@ var app = {
       data: JSON.stringify(messageObject),
       contentType: 'application/json',
       success: function (data) {
-        console.log(data);
+        // console.log(data);
         console.log('chatterbox: Message sent');
+        app.clearMessages();
         app.fetch();
       },
       error: function (data) {
@@ -79,6 +80,7 @@ var app = {
           //populate the dropdown options with roomnames
         // for the given roomnames in the dropdown
           // render message based on the roomname
+        app.clearMessages(); 
         for (var i = 0; i < messages.results.length; i++) {
           app.renderMessage(messages.results[i]);
           //app.renderRoom(messages.results[i]);
@@ -106,9 +108,18 @@ var app = {
     $('#chats').empty();
   },
   renderMessage: function(message) {
+    if (message.text !== undefined) {
+      var cleanMessage = message.text.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");  
+    } else {
+      cleanMessage = ' ';
+    }
     
-
-    $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + message.text + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
+    console.log (" **** ", cleanMessage);
+    //need to handle bad chat message using regex
+    
+    $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
+    // var cleanMessage = message.text;
+    // $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
     //set the dropdown #to the room name
 
   },
@@ -124,18 +135,34 @@ var app = {
     // console.log('i am in handleSubmit');
     // console.log($('.sendMessage').val());
     // create a messageObject
+
     var messageObject = {
       // get the current username (default: hanyen)
-      username: 'hanyen',
+      username: app.getUrlParameter('username'),
       // get the message typed in the box (#message)
       text: $('.sendMessage').val(),
       // get the current room i am in (#roomSelect)
       roomname: 'lobby'
     };
-    console.log(messageObject);
+    // console.log(messageObject);
 
     // pass the messageObject to app.send
     app.send(messageObject);
+    // app.fetch();
+  },
+
+  getUrlParameter: function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1));
+    var sURLVariables = sPageURL.split('&');
+    var sParameterName;
+
+    for (var i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+        return sParameterName[1] === undefined ? true : sParameterName[1];
+      }
+    }
   }
 };
 
@@ -146,7 +173,7 @@ var app = {
 1. Display messages retrieved from the parse server. (done)
 
 Use proper escaping on any user input. Since you're displaying input that other users have typed, your app is vulnerable XSS attacks. See the section about escaping below.
-http://wonko.com/post/html-escaping
+http://wonko.com/post/html-escaping. (done)
 
 2. Setup a way to refresh the displayed messages (either automatically or with a button)
 
