@@ -47,8 +47,10 @@ body {
 }
 
 #chats {
-    width: 500px;
-    fill: red;
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px 10px;
+    
 }
 
 form {
@@ -64,11 +66,11 @@ form input[type=text] {
     padding: 5px;
 }
 
-.chat {
+/*.chat {
     padding: 5px;
     margin-bottom: 5px;
     background-color: #eee;
-}
+}*/
 
 .chat .username {
     font-weight: 800;
@@ -97,4 +99,15 @@ form input[type=text] {
     background-color: #dcdcdc;
     padding: 5px;
     margin: 10px;
+}
+
+.sendMessage {
+    margin-top: 10px;
+    height: 20px;
+    width: 400px;
+}
+
+.submit {
+    font-size: 16px;
+    border-radius: 4px;
 }

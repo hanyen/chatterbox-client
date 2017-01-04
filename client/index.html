@@ -36,10 +36,19 @@
         </select>
       </div>
       
-      <!-- <form action="#" id="send" method="post"> -->
-        <input type="text" name="message" class="sendMessage"/>
-        <button onClick="app.handleSubmit()" type="submit" name="submit" class="submit"/>Submit</button>
-      <!-- </form> -->
+      
+      <input on type="text" name="message" class="sendMessage"/>
+      <button onClick="app.handleSubmit()" type="submit" name="submit" class="submit"/>Submit</button>
+    
+      <script>
+        $('.sendMessage').keydown(function(e) {
+          var key = e.which;
+          if (key === 13) {
+            // As ASCII code for ENTER key is "13"
+            app.handleSubmit(); 
+          }
+        });
+      </script>
     
       <div id="chats"></div>
     </div>
@@ -48,6 +57,8 @@
         // alert(app.init);
         app.init();
       });
+      //call renderRoom one time
+      $('#roomSelect').change(app.renderRoom());
     </script>
   
   </body>

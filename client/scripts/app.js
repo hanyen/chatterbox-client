@@ -20,10 +20,18 @@ var app = {
     roomname: 'lobby'
   },
   
+  // masterRoomname: [],
+
+  //create object with roomname as the key
+  roomnameObject: {
+    AllRooms: ''
+  },
+
   init: function() {
     //fetch all messages and display it in #chat
     //setInterval to autofetch
     app.fetch();
+    app.renderRoom();
     setInterval(app.fetch, 10000);
     
     
@@ -38,7 +46,8 @@ var app = {
     // create click event handlers for submit button (onSubmit)
     $('#send .submit').on('submit', app.handleSubmit);
 
-    
+    // create click event handlers for roomSelect dropdown
+    $('#roomSelect').on('change', app.fetch);
   },
   
   send: function(messageObject) {
@@ -62,15 +71,15 @@ var app = {
   },
   
   fetch: function() {
-    
-    //cache the DOM so that we only have to look at it once
-    var $chats = $('#chats');
 
     $.ajax({
       url: app.server,
       type: 'GET',
       contentType: 'application/json',
-      data: {order: '-createdAt'},
+      data: {
+        order: '-createdAt'
+      },
+      
       success: function (messages) {
         // console.log(messages);
         // goal: render the recent messages firstd
@@ -81,21 +90,28 @@ var app = {
         // for the given roomnames in the dropdown
           // render message based on the roomname
         app.clearMessages(); 
+        console.log($('#roomSelect option:selected').text());
+        console.log('************');
         for (var i = 0; i < messages.results.length; i++) {
-          app.renderMessage(messages.results[i]);
+          if ($('#roomSelect option:selected').text() === 'AllRooms') { /* use jquery to find out which option is selected. if it's AllRooms */
+            app.renderMessage(messages.results[i]);
+          }
+
+          // else if /* the currently selected option */ {
+          //   app.renderMessage(/* just the message in the selected option*/);
+          // }
+          
           //app.renderRoom(messages.results[i]);
 
+        // }
+        
+        
+        // for (var i = 0; i < messages.results.length; i++) {
+        //   app.roomnameObject[messages.results[i].roomname] = '';
+        //   console.log(app.roomnameObject);
+        //   // app.renderRoom(messages.results[i]);
         }
-        //create object with roomname as the key
-        var roomnameObject = {};
-        for (var i = 0; i < messages.results.length; i++) {
-          roomnameObject[messages.results[i].roomname] = '';
-          console.log(roomnameObject);
-          // app.renderRoom(messages.results[i]);
-        }
-        for (var key in roomnameObject) {
-          app.renderRoom(key);
-        }
+        
         console.log('chatterbox: Message received');
       },
       error: function (data) {
@@ -108,24 +124,52 @@ var app = {
     $('#chats').empty();
   },
   renderMessage: function(message) {
+
     if (message.text !== undefined) {
+      //need to handle bad chat message using regex
       var cleanMessage = message.text.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");  
     } else {
       cleanMessage = ' ';
     }
     
-    console.log (" **** ", cleanMessage);
-    //need to handle bad chat message using regex
-    
-    $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
+    $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage /*+ '<span>, CreatedAt: ' + message.createdAt + '</span>'*/ + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
     // var cleanMessage = message.text;
     // $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
     //set the dropdown #to the room name
 
   },
-  renderRoom: function(roomName) {
-    //adding roomname to the option
-    $('#roomSelect').append('<option>' + roomName + '</option>');
+  renderRoom: function() {
+    $.ajax({
+      url: app.server,
+      type: 'GET',
+      contentType: 'application/json',
+      data: {
+        order: '-createdAt'
+      },
+      
+      success: function (messages) {
+        for (var i = 0; i < messages.results.length; i++) {
+          app.roomnameObject[messages.results[i].roomname] = '';
+        }
+
+        console.log(app.roomnameObject);
+        console.log('^^^^^^^^^^^^^^');
+        //append options to the HTML select tag
+        $('#roomSelect').empty();
+        for (var key in app.roomnameObject) {
+          $('#roomSelect').append('<option>' + key + '</option>');
+        }
+        console.log('chatterbox: Message received');
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to receive message', data);
+      }
+    });
+
+    
+    
+    
   },
   handleUsernameClick: function() {
     console.log('i am in handleUsernameClick');
@@ -148,7 +192,7 @@ var app = {
 
     // pass the messageObject to app.send
     app.send(messageObject);
-    // app.fetch();
+    $('.sendMessage').val('');
   },
 
   getUrlParameter: function getUrlParameter(sParam) {
@@ -175,7 +219,7 @@ var app = {
 Use proper escaping on any user input. Since you're displaying input that other users have typed, your app is vulnerable XSS attacks. See the section about escaping below.
 http://wonko.com/post/html-escaping. (done)
 
-2. Setup a way to refresh the displayed messages (either automatically or with a button)
+2. Setup a way to refresh the displayed messages (either automatically or with a button) (done)
 
 3. Allow users to select a user name for themself and to be able to send messages
 //1. assign IDs/clasees to the html form elements
