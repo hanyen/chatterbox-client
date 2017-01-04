@@ -34,12 +34,6 @@ var app = {
     app.renderRoom();
     setInterval(app.fetch, 10000);
     
-    
-    // create a user chat window after clicking on the username
-      //fetch all the chats of that user, using .fetch method, passing the username
-      //===== code below ======
-
-    
     // create click event handlers for username click (onClick)
     $('.username').on('click', app.handleUsernameClick);
 
@@ -52,13 +46,11 @@ var app = {
   
   send: function(messageObject) {
     $.ajax({
-      // This is the url you should use to communicate with the parse API server.
       url: app.server,
       type: 'POST',
       data: JSON.stringify(messageObject),
       contentType: 'application/json',
       success: function (data) {
-        // console.log(data);
         console.log('chatterbox: Message sent');
         app.clearMessages();
         app.fetch();
@@ -81,7 +73,6 @@ var app = {
       },
       
       success: function (messages) {
-        // console.log(messages);
         // goal: render the recent messages firstd
         // iterate through the data
         
@@ -96,20 +87,6 @@ var app = {
           if ($('#roomSelect option:selected').text() === 'AllRooms') { /* use jquery to find out which option is selected. if it's AllRooms */
             app.renderMessage(messages.results[i]);
           }
-
-          // else if /* the currently selected option */ {
-          //   app.renderMessage(/* just the message in the selected option*/);
-          // }
-          
-          //app.renderRoom(messages.results[i]);
-
-        // }
-        
-        
-        // for (var i = 0; i < messages.results.length; i++) {
-        //   app.roomnameObject[messages.results[i].roomname] = '';
-        //   console.log(app.roomnameObject);
-        //   // app.renderRoom(messages.results[i]);
         }
         
         console.log('chatterbox: Message received');
@@ -133,11 +110,8 @@ var app = {
     }
     
     $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage /*+ '<span>, CreatedAt: ' + message.createdAt + '</span>'*/ + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
-    // var cleanMessage = message.text;
-    // $('#chats').append('<div class="message"><a href="#" class = "username">' + message.username + '</a> ' + cleanMessage + '<span>, CreatedAt: ' + message.createdAt + '</span>' + '<span>, Roomname: ' + message.roomname + '</span>' + '</div>');
-    //set the dropdown #to the room name
-
   },
+
   renderRoom: function() {
     $.ajax({
       url: app.server,
@@ -151,9 +125,6 @@ var app = {
         for (var i = 0; i < messages.results.length; i++) {
           app.roomnameObject[messages.results[i].roomname] = '';
         }
-
-        console.log(app.roomnameObject);
-        console.log('^^^^^^^^^^^^^^');
         //append options to the HTML select tag
         $('#roomSelect').empty();
         for (var key in app.roomnameObject) {
@@ -166,20 +137,14 @@ var app = {
         console.error('chatterbox: Failed to receive message', data);
       }
     });
-
-    
-    
-    
   },
+
   handleUsernameClick: function() {
     console.log('i am in handleUsernameClick');
     
   },
+  
   handleSubmit: function() {
-    // console.log('i am in handleSubmit');
-    // console.log($('.sendMessage').val());
-    // create a messageObject
-
     var messageObject = {
       // get the current username (default: hanyen)
       username: app.getUrlParameter('username'),
@@ -188,7 +153,6 @@ var app = {
       // get the current room i am in (#roomSelect)
       roomname: 'lobby'
     };
-    // console.log(messageObject);
 
     // pass the messageObject to app.send
     app.send(messageObject);
